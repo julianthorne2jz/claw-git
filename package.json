@@ -1,0 +1,16 @@
+{
+  "name": "claw-git",
+  "version": "1.0.0",
+  "description": "Git helper for AI agents — quick status, smart commits, branch management",
+  "main": "index.js",
+  "bin": {
+    "claw-git": "./index.js"
+  },
+  "keywords": ["git", "ai-agents", "cli", "developer-tools", "openclaw"],
+  "author": "Julian Thorne",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/julianthorne2jz/claw-git"
+  }
+}
