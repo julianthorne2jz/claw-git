@@ -4,6 +4,7 @@ Git helper for AI agents. Quick status, smart commits, branch management.
 
 ## Features
 
+- **AI-Powered Commits** — Generate conventional commit messages from diffs (uses `gemini`)
 - **Quick status** — One-line repo health with emoji indicators
 - **Smart commits** — Auto-stage, auto-message, push in one command
 - **Remote awareness** — See ahead/behind counts at a glance
@@ -29,7 +30,12 @@ node index.js quick
 # Commit with auto-staging and push
 node index.js commit "fix: resolve edge case" -ap
 
-# Or let it generate a message
+# Generate a commit message with AI (requires gemini CLI)
+node index.js commit -g
+# AI Message: feat: add hello world console log
+# ✓ Committed: feat: add hello world console log
+
+# Or let it generate a default message (no AI)
 node index.js commit -ap
 # ✓ Committed: update index.js, README.md
 
@@ -47,7 +53,7 @@ node index.js stash           # Stash changes
 |---------|-------|-------------|
 | `status` | | Full status with remote tracking |
 | `quick` | `q` | One-line status (emoji + counts) |
-| `commit [msg]` | `c` | Commit with options (-a/--all, -p/--push) |
+| `commit [msg]` | `c` | Commit (-a/--all, -p/--push, -g/--generate) |
 | `push` | | Push to remote (-f/--force) |
 | `pull` | | Pull from remote (-r/--rebase) |
 | `branches` | `br` | List branches (--json) |

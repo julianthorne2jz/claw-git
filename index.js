@@ -160,6 +160,51 @@ function cmdQuick(opts = {}) {
   console.log(line);
 }
 
+function generateCommitMessage(diff) {
+  try {
+    // Check for gemini
+    try {
+      execSync('which gemini', { stdio: 'ignore' });
+    } catch (e) {
+      console.log(`${c.red}Error: 'gemini' CLI tool not found. Install it to use AI generation.${c.reset}`);
+      return null;
+    }
+
+    console.log(`${c.dim}Generating commit message...${c.reset}`);
+    
+    // Create prompt
+    const prompt = `Generate a concise, conventional commit message (e.g. 'feat: ...' or 'fix: ...') for the following git diff.
+Rules:
+1. Format: <type>: <description>
+2. Use types: feat, fix, docs, style, refactor, test, chore
+3. Max 72 chars usually, but keep it concise.
+4. Output ONLY the raw message text. No markdown, no quotes, no explanation.
+
+Diff:
+${diff.slice(0, 8000)}`;
+
+    // Use a temp file to avoid shell escaping hell
+    const tmpFile = path.join(require('os').tmpdir(), `claw-git-prompt-${Date.now()}.txt`);
+    fs.writeFileSync(tmpFile, prompt);
+
+    // Call gemini with cat
+    const msg = execSync(`gemini "$(cat ${tmpFile})"`, { encoding: 'utf8', stdio: 'pipe' }).trim();
+    
+    // Cleanup
+    fs.unlinkSync(tmpFile);
+    
+    // Clean up response (remove markdown code blocks if any)
+    let cleanMsg = msg.replace(/```/g, '').trim();
+    // Remove leading "feat: " if repeated or quoted
+    cleanMsg = cleanMsg.replace(/^["']|["']$/g, '');
+    
+    return cleanMsg;
+  } catch (e) {
+    console.log(`${c.red}Error generating message: ${e.message}${c.reset}`);
+    return null;
+  }
+}
+
 function cmdCommit(message, opts = {}) {
   if (!isGitRepo()) {
     console.log(`${c.red}Not a git repository${c.reset}`);
@@ -172,6 +217,20 @@ function cmdCommit(message, opts = {}) {
   if (opts.all || status.staged.length === 0) {
     run('git add -A');
     console.log(`${c.dim}Staged all changes${c.reset}`);
+  }
+  
+  // Generate message with AI if requested
+  if (opts.generate && !message) {
+    const diff = run('git diff --cached', { pipe: true });
+    if (!diff) {
+      console.log(`${c.yellow}Nothing to commit (no changes)${c.reset}`);
+      return;
+    }
+    
+    message = generateCommitMessage(diff);
+    if (!message) return; // Error already printed
+    
+    console.log(`${c.cyan}AI Message:${c.reset} ${message}`);
   }
   
   // Generate message if not provided
@@ -354,7 +413,7 @@ ${c.bold}USAGE${c.reset}
 ${c.bold}COMMANDS${c.reset}
   ${c.cyan}status${c.reset}              Full status with remote info (--json)
   ${c.cyan}quick${c.reset}, ${c.cyan}q${c.reset}           One-line status (emoji + counts)
-  ${c.cyan}commit${c.reset} [msg]        Commit changes (-a/--all, -p/--push)
+  ${c.cyan}commit${c.reset} [msg]        Commit (-a/--all, -p/--push, -g/--generate)
   ${c.cyan}push${c.reset}                Push to remote (-f/--force)
   ${c.cyan}pull${c.reset}                Pull from remote (-r/--rebase)
   ${c.cyan}branches${c.reset}, ${c.cyan}br${c.reset}       List branches (--json)
@@ -403,6 +462,7 @@ function main() {
       cmdCommit(msg, {
         all: rest.includes('-a') || rest.includes('--all'),
         push: rest.includes('-p') || rest.includes('--push'),
+        generate: rest.includes('-g') || rest.includes('--generate'),
       });
       break;
     
