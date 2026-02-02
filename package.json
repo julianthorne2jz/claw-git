@@ -1,6 +1,6 @@
 {
   "name": "claw-git",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Git helper for AI agents — quick status, smart commits, branch management",
   "main": "index.js",
   "bin": {

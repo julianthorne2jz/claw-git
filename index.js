@@ -8,7 +8,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 
 // ANSI colors
 const c = {
@@ -25,7 +25,8 @@ const c = {
 
 function run(cmd, opts = {}) {
   try {
-    return execSync(cmd, { encoding: 'utf8', stdio: opts.pipe ? 'pipe' : undefined, ...opts }).trim();
+    const res = execSync(cmd, { encoding: 'utf8', stdio: opts.pipe ? 'pipe' : undefined, ...opts });
+    return opts.trim === false ? res : res.trim();
   } catch (e) {
     if (opts.silent) return null;
     throw e;
@@ -41,7 +42,7 @@ function getBranch() {
 }
 
 function getStatus() {
-  const status = run('git status --porcelain', { pipe: true });
+  const status = run('git status --porcelain', { pipe: true, trim: false });
   if (!status) return { staged: [], unstaged: [], untracked: [] };
   
   const lines = status.split('\n').filter(Boolean);
