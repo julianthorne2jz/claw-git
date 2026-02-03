@@ -24,7 +24,7 @@ claw-git push -f         # Push --force
 - `-g, --generate`: Generate commit message using AI (requires `gemini` CLI)
 - `-a, --all`: Auto-stage all changes
 - `-p, --push`: Push after commit
-- `--json`: Output JSON for automation
+- `--human, -H — Human-readable output (default: JSON) for automation
 
 ## When to Use
 
