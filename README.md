@@ -1,5 +1,16 @@
 # claw-git
 
+## Install
+
+```bash
+git clone https://github.com/julianthorne2jz/claw-git
+cd claw-git
+npm link
+```
+
+Now you can use `claw-git` from anywhere.
+
+
 Git helper for AI agents. Quick status, smart commits, branch management.
 
 ## Features
@@ -21,30 +32,30 @@ cd claw-git
 
 ```bash
 # Full status with remote info
-node index.js status
+claw-git status
 
 # Quick one-liner (great for scripts)
-node index.js quick
+claw-git quick
 # 🟡 main ↑2 | 3S 1M 0U
 
 # Commit with auto-staging and push
-node index.js commit "fix: resolve edge case" -ap
+claw-git commit "fix: resolve edge case" -ap
 
 # Generate a commit message with AI (requires gemini CLI)
-node index.js commit -g
+claw-git commit -g
 # AI Message: feat: add hello world console log
 # ✓ Committed: feat: add hello world console log
 
 # Or let it generate a default message (no AI)
-node index.js commit -ap
+claw-git commit -ap
 # ✓ Committed: update index.js, README.md
 
 # Other commands
-node index.js branches        # List branches
-node index.js log 5           # Last 5 commits
-node index.js diff --staged   # Staged changes
-node index.js undo            # Undo last commit
-node index.js stash           # Stash changes
+claw-git branches        # List branches
+claw-git log 5           # Last 5 commits
+claw-git diff --staged   # Staged changes
+claw-git undo            # Undo last commit
+claw-git stash           # Stash changes
 ```
 
 ## Commands
@@ -76,15 +87,15 @@ node index.js stash           # Stash changes
 
 ```bash
 # Morning workflow
-node index.js pull -r
-node index.js status
+claw-git pull -r
+claw-git status
 
 # Quick check
-node index.js q
+claw-git q
 # 🟢 main | clean
 
 # End of day
-node index.js commit "feat: add new feature" -ap
+claw-git commit "feat: add new feature" -ap
 ```
 
 ## License
