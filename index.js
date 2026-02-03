@@ -254,7 +254,13 @@ function cmdCommit(message, opts = {}) {
   }
   
   // Commit
-  run(`git commit -m "${message.replace(/"/g, '\\"')}"`);
+  // Escape double quotes and backticks to prevent shell injection/expansion
+  const safeMessage = message
+    .replace(/"/g, '\\"')
+    .replace(/`/g, '\\`')
+    .replace(/\$/g, '\\$'); // Also escape $ to prevent variable expansion
+
+  run(`git commit -m "${safeMessage}"`);
   console.log(`${c.green}✓${c.reset} Committed: ${c.bold}${message}${c.reset}`);
   
   // Push if requested
