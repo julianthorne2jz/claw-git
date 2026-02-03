@@ -93,7 +93,7 @@ function cmdStatus(opts = {}) {
   const last = getLastCommit();
   const remote = getRemoteStatus();
   
-  if (opts.json) {
+  if (!opts.human) {
     console.log(JSON.stringify({ branch, ...status, last, remote }, null, 2));
     return;
   }
@@ -323,7 +323,7 @@ function cmdBranches(opts = {}) {
   const current = getBranch();
   const branches = run('git branch --format="%(refname:short)"', { pipe: true }).split('\n').filter(Boolean);
   
-  if (opts.json) {
+  if (!opts.human) {
     console.log(JSON.stringify({ current, branches }));
     return;
   }
