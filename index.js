@@ -418,12 +418,12 @@ ${c.bold}USAGE${c.reset}
   node index.js <command> [options]
 
 ${c.bold}COMMANDS${c.reset}
-  ${c.cyan}status${c.reset}              Full status with remote info (--json)
+  ${c.cyan}status${c.reset}              Full status with remote info (--human) || rest.includes('-H')
   ${c.cyan}quick${c.reset}, ${c.cyan}q${c.reset}           One-line status (emoji + counts)
   ${c.cyan}commit${c.reset} [msg]        Commit (-a/--all, -p/--push, -g/--generate)
   ${c.cyan}push${c.reset}                Push to remote (-f/--force)
   ${c.cyan}pull${c.reset}                Pull from remote (-r/--rebase)
-  ${c.cyan}branches${c.reset}, ${c.cyan}br${c.reset}       List branches (--json)
+  ${c.cyan}branches${c.reset}, ${c.cyan}br${c.reset}       List branches (--human) || rest.includes('-H')
   ${c.cyan}log${c.reset} [n]             Show last n commits (--oneline)
   ${c.cyan}diff${c.reset}                Show unstaged diff (--staged)
   ${c.cyan}undo${c.reset}                Undo last commit (--soft)
@@ -444,7 +444,7 @@ function main() {
   const args = process.argv.slice(2);
   
   if (args.length === 0 || args[0] === 'status') {
-    cmdStatus({ json: args.includes('--json') });
+    cmdStatus({ human: args.includes('--human') || args.includes('-H') });
     return;
   }
   
